@@ -52,14 +52,14 @@ export const createTodoList = async (req, res, next) => {
     return next(new HttpError(' Title is too long, please make sure to limit it to under 70 characters.', 422));
   };
 
-  const { title, image, creator, isShared, isEdited } = req.body;
+  const { title, image, creator, isPublic, isEditable } = req.body;
 
   const createdTodoList = new TodoListsSchema({
     title,
     image: image + '/uploads/images',
     todo: [],
-    isShared,
-    isEdited,
+    isPublic,
+    isEditable,
     creator,
   });
 
@@ -101,7 +101,7 @@ export const updateTodoList = async (req, res, next) => {
     return next(new HttpError(' Title is too long, please make sure to limit it to under 70 characters.', 422));
   };
 
-  const { title, todo, isShared, isEdited } = req.body;
+  const { title, todo, isPublic, isEditable } = req.body;
   const todoListId = req.params.tid;
 
   let todoListToBeUpdated;
@@ -114,7 +114,7 @@ export const updateTodoList = async (req, res, next) => {
 
   try {
     await TodoListsSchema.findByIdAndUpdate(todoListId, {
-      title, todo, isShared, isEdited
+      title, todo, isPublic, isEditable
     })
   } catch (err) {
     const error = new HttpError('Failed to update the to-do list, please try again', 500)

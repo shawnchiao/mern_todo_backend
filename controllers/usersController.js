@@ -48,7 +48,7 @@ export const signUpUser = async (req, res, next) => {
     const error = HttpError("Could not create user, please try again.", 500);
     return next(error);
   }
-
+  console.log(req.file + " !!!!!!!!!!!!!!!!")
   let newUser;
   if (!existingUser) {
     newUser = new UserSchema({
@@ -57,7 +57,7 @@ export const signUpUser = async (req, res, next) => {
       password: hashedPassword,
       todoLists: [],
       image:
-        /* req.file && !image ? process.env.AWS_S3_URL + req.file.filename : */ image,
+        req.file && !image ? 'http://localhost:5000/uploads/images/' + req.file.filename : image,
     });
   } else {
     const error = new HttpError("the email exist, please try again", 500);
@@ -72,19 +72,19 @@ export const signUpUser = async (req, res, next) => {
     );
     return next(error);
   }
-  // let token;
-  // try {
-  //   token = jwt.sign(
-  //     { userId: newUser.id, email: newUser.email },
-  //     'process.env.JWT_KEY',
-  //     { expiresIn: '1h' }
-  //   )
-  // } catch (err) {
-  //   const error = new HttpError('Something went wrong, could not create the user', 500);
-  //   return next(error);
-  // };
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: newUser.id, email: newUser.email },
+      'process.env.JWT_KEY',
+      { expiresIn: '1h' }
+    )
+  } catch (err) {
+    const error = new HttpError('Something went wrong, could not create the user', 500);
+    return next(error);
+  };
 
-  res.status(201).json({ userId: newUser.id, email: newUser.email });
+  res.status(201).json({ userId: newUser.id, email: newUser.email, token,});
 };
 
 export const login = async (req, res, next) => {
@@ -122,26 +122,26 @@ export const login = async (req, res, next) => {
     return next(error);
   }
 
-  // let token;
-  // try {
-  //   token = jwt.sign(
-  //     { userId: existingUser.id, email: existingUser.email },
-  //     process.env.JWT_KEY,
-  //     { expiresIn: "1h" }
-  //   );
-  // } catch (err) {
-  //   const error = new HttpError("Failed to log in now, please try again.", 500);
-  //   return next(error);
-  // }
+  let token;
+  try {
+    token = jwt.sign(
+      { userId: existingUser.id, email: existingUser.email },
+      process.env.JWT_KEY,
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    const error = new HttpError("Failed to log in now, please try again.", 500);
+    return next(error);
+  }
 
   res
     .status(200)
     // .json({ 
     //   message: 'You have logged in!', user: existingUser.toObject({ getters: true }) });
-    .json({ 
-        userId: existingUser.id,
-        email: existingUser.email,
-        // token:token
-       });
+    .json({
+      userId: existingUser.id,
+      email: existingUser.email,
+      token:token
+    });
 
 };

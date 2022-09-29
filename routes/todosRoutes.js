@@ -8,13 +8,15 @@ import {
   updateTodoList,
   deleteTodoList,
 } from "../controllers/todoListsController.js";
-// import checkAuth from "../middleware/check-auth.js";
+import checkAuth from "../middleware/checkAuth.js";
 
 const router = express.Router();
 
 router.get("/user/:uid", getTodoListsByUserId);
 
 router.get("/:tid", getTodoListById);
+
+router.use(checkAuth);
 
 router.post("/", [check("title").trim().isLength({ max: 70 })], createTodoList);
 
