@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import { default as mongoose } from 'mongoose';
 
-import HttpError from '../models/httpError.js';
+import HttpError from '../models/httpError.js'
 import TodoListsSchema from '../models/todoListsSchema.js';
 import UserSchema from '../models/userSchema.js';
 
@@ -52,23 +52,23 @@ export const createTodoList = async (req, res, next) => {
     return next(new HttpError(' Title is too long, please make sure to limit it to under 70 characters.', 422));
   };
 
-  const { title, image, creator, isPublic, isEditable } = req.body;
-
+  const { title, creator, isPublic, isEditable, type } = req.body;
+  console.log(req.body)
   const createdTodoList = new TodoListsSchema({
     title,
-    image: image + '/uploads/images',
+    type,
     todo: [],
     isPublic,
     isEditable,
     creator,
   });
-
+  
   // check if a exist userid is existing
   let user;
   try {
     user = await UserSchema.findById(creator);
   } catch (err) {
-    const error = new HttpError('Failed to create a to-do list, please try again.', 500)
+    const error = new HttpError('Failed to create a to-do list when obtaining user data, please try again.', 500)
     return next(error);
   };
 
@@ -81,11 +81,11 @@ export const createTodoList = async (req, res, next) => {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdTodoList.save({ session: sess });
-    await user.todoLists.push(createTodoList);
+    await user.todoLists.push(createdTodoList);
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
-    const error = new HttpError('Failed to create the to-do list, please try again.', 500);
+    const error = new HttpError('Failed to create the to-do list when uploading data, please try again.', 500);
     return next(error);
   };
 

@@ -17,8 +17,8 @@ router.get("/user/:uid", getTodoListsByUserId);
 router.get("/:tid", getTodoListById);
 
 router.use(checkAuth);
-
 router.post("/", [check("title").trim().isLength({ max: 70 })], createTodoList);
+
 
 router.patch(
   "/tid",

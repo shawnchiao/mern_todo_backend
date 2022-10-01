@@ -76,7 +76,7 @@ export const signUpUser = async (req, res, next) => {
   try {
     token = jwt.sign(
       { userId: newUser.id, email: newUser.email },
-      'process.env.JWT_KEY',
+      process.env.JWT_KEY,
       { expiresIn: '1h' }
     )
   } catch (err) {
