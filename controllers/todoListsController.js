@@ -17,7 +17,7 @@ export const getTodoListsByUserId = async (req, res, next) => {
     return next(error);
   }
 
-  if (!places || places.length === 0) {
+  if (!todoLists || todoLists.length === 0) {
     return next(
       new HttpError('Could not find any to-do list from the user', 404)
     );
