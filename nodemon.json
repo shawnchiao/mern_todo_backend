@@ -1,0 +1,16 @@
+{
+  "env": {
+    "DB_USER": "shawnjoe",
+    "DB_PASSWORD": "asdf8869",
+    "DB_NAME": "MERNTODO",
+    "JWT_KEY": "this_is_my_secret_key!",
+    "BACKEND_URL": "https://mern-place-shawn.herokuapp.com", 
+    "AWS_BUCKET_NAME": "mern-place-pictures",
+    "AWS_BUCKET_REGION": "ap-southeast-2",
+    "AWS_ACCESS_KEY": "AKIA6GLOYNIP4NQKICEZ",
+    "AWS_SECRET_KEY": "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",
+    "AWS_S3_URL": "https://mern-place-pictures.s3.ap-southeast-2.amazonaws.com/"
+}
+}
+
+  
