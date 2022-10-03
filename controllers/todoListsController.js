@@ -62,7 +62,7 @@ export const createTodoList = async (req, res, next) => {
     isEditable,
     creator,
   });
-  
+
   // check if a exist userid is existing
   let user;
   try {
@@ -126,12 +126,12 @@ export const updateTodoList = async (req, res, next) => {
 };
 
 export const deleteTodoList = async (req, res, next) => {
-  const todoListId = req.params.pid
+  const todoListId = req.params.tid;
 
   let todoListToBeDeleted;
   try {
-    todoListToBeDeleted = TodoListsSchema.findById(todoListId).populate({path: 'creator', model: UserSchema});
-  } catch(err) {
+    todoListToBeDeleted = await TodoListsSchema.findById(todoListId).populate({ path: 'creator', model: UserSchema });
+  } catch (err) {
     const error = new HttpError('Failed to find the to-do list when deleting, please try again', 500);
     return next(error);
   };
@@ -140,11 +140,11 @@ export const deleteTodoList = async (req, res, next) => {
     const error = new HttpError('Did not find the to-list to be deleted, please try again', 500);
     return next(error);
   }
-
-  // if (todoListToBeDeleted.creator.id !== req.userData.userId) {
-  //   const error = new HttpError('You are not authorized to delete this place.', 401);
-  //   return next(error);
-
+  // console.log(todoListToBeDeleted)
+  if (todoListToBeDeleted.creator.id !== req.userData.userId) {
+    const error = new HttpError('You are not authorized to delete this place.', 401);
+    return next(error);
+  }
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
@@ -158,5 +158,5 @@ export const deleteTodoList = async (req, res, next) => {
     return next(error);
   };
 
-  res.status(200).json({message:'place deleted'});
+  res.status(200).json({ message: 'place deleted' });
 };

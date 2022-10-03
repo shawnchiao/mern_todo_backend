@@ -21,11 +21,11 @@ router.post("/", [check("title").trim().isLength({ max: 70 })], createTodoList);
 
 
 router.patch(
-  "/tid",
+  "/:tid",
   [check("title").trim().isLength({ max: 70 })],
   updateTodoList
 );
 
-router.delete("./tid", deleteTodoList);
+router.delete("/:tid", deleteTodoList);
 
 export default router;
