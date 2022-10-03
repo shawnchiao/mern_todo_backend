@@ -17,7 +17,7 @@ export const getTodoListsByUserId = async (req, res, next) => {
     return next(error);
   }
 
-  if (!todoLists || todoLists.length === 0) {
+  if (!todoLists ) {
     return next(
       new HttpError('Could not find any to-do list from the user', 404)
     );
@@ -27,7 +27,7 @@ export const getTodoListsByUserId = async (req, res, next) => {
 };
 
 export const getTodoListById = async (req, res, next) => {
-  const todoListId = req.params(tid);
+  const todoListId = req.params.tid;
 
   let todoList;
   try {
@@ -57,9 +57,8 @@ export const createTodoList = async (req, res, next) => {
   const createdTodoList = new TodoListsSchema({
     title,
     type,
-    todo: [],
-    isPublic,
-    isEditable,
+    todos: [],
+    setting: { isPublic: isPublic, isEditable: isEditable},
     creator,
   });
 
@@ -101,7 +100,7 @@ export const updateTodoList = async (req, res, next) => {
     return next(new HttpError(' Title is too long, please make sure to limit it to under 70 characters.', 422));
   };
 
-  const { title, todo, isPublic, isEditable } = req.body;
+  const { title, todos, isPublic, isEditable } = req.body;
   const todoListId = req.params.tid;
 
   let todoListToBeUpdated;
@@ -114,7 +113,7 @@ export const updateTodoList = async (req, res, next) => {
 
   try {
     await TodoListsSchema.findByIdAndUpdate(todoListId, {
-      title, todo, isPublic, isEditable
+      title, todos, isPublic, isEditable
     })
   } catch (err) {
     const error = new HttpError('Failed to update the to-do list, please try again', 500)
