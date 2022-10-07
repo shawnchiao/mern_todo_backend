@@ -22,7 +22,6 @@ router.post("/", [check("title").trim().isLength({ max: 70 })], createTodoList);
 
 router.patch(
   "/:tid",
-  [check("title").trim().isLength({ max: 70 })],
   updateTodoList
 );
 

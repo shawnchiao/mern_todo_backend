@@ -94,18 +94,13 @@ export const createTodoList = async (req, res, next) => {
 
 
 export const updateTodoList = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    return next(new HttpError(' Title is too long, please make sure to limit it to under 70 characters.', 422));
-  };
-
-  const { title, todos, isPublic, isEditable } = req.body;
+  
+  const {  todos, setting  } = req.body;
   const todoListId = req.params.tid;
 
   let todoListToBeUpdated;
   try {
-    todoListToBeUpdated = TodoListsSchema.findById(todoListId);
+    todoListToBeUpdated = await TodoListsSchema.findById(todoListId);
   } catch (err) {
     const error = new HttpError('Failed to find the to-do list when updating, please try again', 500)
     return next(error);
@@ -113,7 +108,7 @@ export const updateTodoList = async (req, res, next) => {
 
   try {
     await TodoListsSchema.findByIdAndUpdate(todoListId, {
-      title, todos, isPublic, isEditable
+       todos, setting
     })
   } catch (err) {
     const error = new HttpError('Failed to update the to-do list, please try again', 500)
