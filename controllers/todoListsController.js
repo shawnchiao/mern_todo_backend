@@ -80,7 +80,7 @@ export const createTodoList = async (req, res, next) => {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdTodoList.save({ session: sess });
-    await user.todoLists.push({createdTodoList, isPublic:isPublic});
+    await user.todoLists.push(createdTodoList);
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {

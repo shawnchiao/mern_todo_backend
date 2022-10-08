@@ -2,8 +2,10 @@ import { validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+
 import HttpError from "../models/httpError.js";
 import UserSchema from "../models/userSchema.js";
+import TodoListsSchema from '../models/todoListsSchema.js';
 
 export const getAllUsers = async (req, res, next) => {
   let allUsers;
@@ -16,9 +18,25 @@ export const getAllUsers = async (req, res, next) => {
     );
     return next(error);
   }
+  let allTodoLists;
+  try {
+    allTodoLists = await TodoListsSchema.find({});
+  } catch (err) {
+    const error = new HttpError(
+      "Can't retreive the user data, please try again",
+      500
+    );
+    return next(error);
+  }
+  let listsInfo = [];
+  for (let todoList of allTodoLists) {
+    listsInfo.push({id: todoList.id, setting: todoList.setting, creator: todoList.creator})
+  }
+
   res
     .status(200)
-    .json({ users: allUsers.map((user) => user.toObject({ getters: true })) });
+    .json({ users: allUsers.map((user) => user.toObject({ getters: true })), listInfo: listsInfo})
+
 };
 
 export const signUpUser = async (req, res, next) => {
