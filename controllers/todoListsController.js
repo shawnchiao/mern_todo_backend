@@ -23,7 +23,7 @@ export const getTodoListsByUserId = async (req, res, next) => {
     );
   };
 
-  res.json({ todoLists: todoLists.map(todoList => todoList.toObject({ getters: true })) });
+  res.json({ todoLists: todoLists.map(todoList => todoList.toObject({ getters: true })),  });
 };
 
 export const getTodoListById = async (req, res, next) => {
@@ -80,7 +80,7 @@ export const createTodoList = async (req, res, next) => {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdTodoList.save({ session: sess });
-    await user.todoLists.push(createdTodoList);
+    await user.todoLists.push({createdTodoList, isPublic:isPublic});
     await user.save({ session: sess });
     await sess.commitTransaction();
   } catch (err) {
