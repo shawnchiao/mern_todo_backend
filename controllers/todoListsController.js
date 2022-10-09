@@ -105,7 +105,10 @@ export const updateTodoList = async (req, res, next) => {
     const error = new HttpError('Failed to find the to-do list when updating, please try again', 500)
     return next(error);
   };
-
+  if ((todoListToBeUpdated.creator.toString() !== req.userData.userId) && (!todoListToBeUpdated.setting.isEditable)) {
+    const error = new HttpError('You are not authorized to edit this list', 401)
+    return next(error);
+  };
   try {
     await TodoListsSchema.findByIdAndUpdate(todoListId, {
        todos, setting
