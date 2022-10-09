@@ -3,7 +3,7 @@ import { check } from "express-validator";
 
 import { getAllUsers, signUpUser, login } from "../controllers/usersController.js";
 import fileUpload from "../middleware/fileUpload.js";
-// import s3 = from '../middleware/s3';
+import s3 from '../middleware/s3.js';
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.post(
     check("email").normalizeEmail().isEmail(),
     check("password").isLength({ min: 6 }),
   ],
-  // s3.uploadFileS3,
+  s3,
   signUpUser
 );
 
